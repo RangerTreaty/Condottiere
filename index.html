@@ -7,7 +7,7 @@
     <style>
         :root {
             --bg-dark: #0a0b0e;
-            --panel-bg: rgba(20, 24, 33, 0.85);
+            --panel-bg: rgba(20, 24, 33, 0.95);
             --panel-solid: #121620;
             --gold-accent: #e6c669;
             --border-color: rgba(230, 198, 105, 0.25);
@@ -32,32 +32,78 @@
             min-height: 100vh;
         }
 
+        /* Sticky Menu Bar */
         header {
+            position: sticky;
+            top: 0;
             width: 100%;
-            background: rgba(10, 11, 14, 0.9);
+            background: rgba(10, 11, 14, 0.95);
             backdrop-filter: blur(8px);
             border-bottom: 1px solid var(--border-color);
-            text-align: center;
-            padding: 12px 20px;
+            padding: 10px 20px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-            z-index: 10;
+            z-index: 100;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 20px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-shrink: 0;
         }
 
         h1 {
             margin: 0;
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             color: var(--gold-accent);
-            letter-spacing: 3px;
+            letter-spacing: 2px;
             text-transform: uppercase;
             font-weight: 700;
+        }
+
+        /* Navbar Integrated Mini-Tracker */
+        .navbar-scoreboard {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .nav-player-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 4px 8px;
+            text-align: center;
+            min-width: 65px;
+        }
+
+        .nav-player-card .name {
+            font-weight: 600;
+            font-size: 0.7rem;
+            margin-bottom: 2px;
+        }
+
+        .nav-player-card .stats {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+            gap: 4px;
+        }
+
+        .nav-player-card .stat-num {
+            color: var(--gold-accent);
+            font-weight: bold;
         }
 
         .header-actions {
             display: flex;
             gap: 10px;
+            flex-shrink: 0;
         }
 
         /* Layout Main Section */
@@ -66,7 +112,7 @@
             flex-direction: column;
             align-items: center;
             width: 100%;
-            max-width: 1100px;
+            max-width: 900px;
             padding: 20px;
             flex-grow: 1;
         }
@@ -75,65 +121,15 @@
         .board-container {
             width: 100%;
             display: flex;
-            flex-direction: row;
-            align-items: flex-start;
-            gap: 20px;
-        }
-
-        /* Sidebar Tracker Styling (Vertical along left side) */
-        .scoreboard {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            padding: 16px;
-            background: var(--panel-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            width: 220px;
-            flex-shrink: 0;
-        }
-
-        .player-card {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            padding: 10px 14px;
-            text-align: left;
-            width: 100%;
-        }
-
-        .player-card .name {
-            font-weight: 600;
-            font-size: 0.95rem;
-            margin-bottom: 6px;
-        }
-
-        .player-card .stats {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            display: flex;
-            justify-content: space-between;
-            margin-top: 2px;
-        }
-
-        .player-card .stat-num {
-            color: var(--gold-accent);
-            font-weight: bold;
-        }
-
-        /* Right Content Container (Map + Action Controls) */
-        .map-section {
-            display: flex;
             flex-direction: column;
             align-items: center;
-            flex-grow: 1;
-            width: 100%;
         }
 
         /* Map Container */
         .map-wrapper {
             position: relative;
             width: 100%;
+            max-width: 750px;
             border: 1px solid var(--border-color);
             box-shadow: 0 12px 40px rgba(0,0,0,0.6);
             border-radius: 8px;
@@ -277,7 +273,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 100;
+            z-index: 1000;
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.2s ease;
@@ -333,28 +329,22 @@
             color: #fff;
         }
 
-        /* Responsive Layout Adjustments */
-        @media (max-width: 768px) {
-            .board-container {
+        /* Responsive adjustments for smaller screens */
+        @media (max-width: 950px) {
+            header {
                 flex-direction: column;
+                gap: 10px;
+                padding: 10px;
             }
-
-            .scoreboard {
+            .header-left {
                 width: 100%;
-                flex-direction: row;
-                flex-wrap: wrap;
-                justify-content: center;
+                justify-content: space-between;
             }
-
-            .player-card {
-                width: auto;
-                min-width: 100px;
-                text-align: center;
-            }
-
-            .player-card .stats {
-                justify-content: center;
-                gap: 6px;
+            .navbar-scoreboard {
+                width: 100%;
+                overflow-x: auto;
+                justify-content: flex-start;
+                padding-bottom: 4px;
             }
         }
     </style>
@@ -362,7 +352,10 @@
 <body>
 
     <header>
-        <h1>Condottiere</h1>
+        <div class="header-left">
+            <h1>Condottiere</h1>
+            <div class="navbar-scoreboard" id="scoreboard"></div>
+        </div>
         <div class="header-actions">
             <button class="btn" onclick="openModal('setupModal')">Game Setup</button>
             <button class="btn" onclick="openModal('rulesModal')">Rules</button>
@@ -371,21 +364,17 @@
 
     <div class="main-layout">
         <main class="board-container">
-            <div class="scoreboard" id="scoreboard"></div>
+            <div class="map-wrapper" id="mapWrapper">
+                <img class="map-image" src="Basemap.jpeg" alt="Condottiere Map Board">
+                
+                <div class="sunburst-token" id="sunburstToken" style="left: 50%; top: 50%;" title="Drag to mark active battle target"></div>
 
-            <div class="map-section">
-                <div class="map-wrapper" id="mapWrapper">
-                    <img class="map-image" src="Basemap.jpeg" alt="Condottiere Map Board">
-                    
-                    <div class="sunburst-token" id="sunburstToken" style="left: 50%; top: 50%;" title="Drag to mark active battle target"></div>
+                <div id="markersContainer"></div>
+            </div>
 
-                    <div id="markersContainer"></div>
-                </div>
-
-                <div class="controls">
-                    <button class="btn" onclick="resetToken()">Center Token</button>
-                    <button class="btn" onclick="resetBoard()">Reset Map Control</button>
-                </div>
+            <div class="controls">
+                <button class="btn" onclick="resetToken()">Center Token</button>
+                <button class="btn" onclick="resetBoard()">Reset Map Control</button>
             </div>
         </main>
     </div>
@@ -541,10 +530,9 @@
                 const total = Object.values(state).filter(val => val === p.id).length;
                 const contiguous = getContiguousCount(p.id);
                 return `
-                    <div class="player-card" style="border-color:${p.color}">
+                    <div class="nav-player-card" style="border-color:${p.color}">
                         <div class="name" style="color:${p.color}">${p.name}</div>
-                        <div class="stats">Total: <span class="stat-num">${total}</span></div>
-                        <div class="stats">Contig: <span class="stat-num">${contiguous}</span></div>
+                        <div class="stats">T:<span class="stat-num">${total}</span> C:<span class="stat-num">${contiguous}</span></div>
                     </div>
                 `;
             }).join('');
